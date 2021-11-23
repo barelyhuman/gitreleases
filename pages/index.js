@@ -7,26 +7,38 @@ import { Button } from "components/button";
 
 export default function Home() {
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.push(`/user/${username}`);
+    setLoading(true);
+    if (!username) {
+      setLoading(false);
+      return;
+    }
+
+    setTimeout(() => {
+      router.push(`/user/${username}`);
+    }, 250);
   };
 
   return (
     <>
-      <Layout>
+      <Layout className="min-h-screen flex items-center justify-center">
         <form onSubmit={handleSubmit}>
-          <Box className="flex flex-wrap items-center">
+          <Box className="flex flex-wrap items-center justify-center">
             <Input
               className="w-9/12"
               name="username"
               value={username}
               placeholder="eg: barelyhuman"
               onChange={(e) => setUsername(e.target.value)}
+              required
             />
-            <Button type="submit">Get Releases</Button>
+            <Button disabled={loading} loading={loading} type="submit">
+              Get Releases
+            </Button>
           </Box>
         </form>
       </Layout>
