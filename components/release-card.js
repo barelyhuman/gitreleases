@@ -3,6 +3,7 @@ import Box from "./box";
 
 import { marked } from "marked";
 import Card from "./card";
+import { ExternalLink } from "./icons";
 
 const baseClass = "overflow-hidden rounded-lg shadow-md";
 
@@ -44,21 +45,7 @@ export default function ReleaseCard({ data, className, ...props }) {
       <div className="flex space-x-2 items-center">
         <a href={data.html_url} target="_blank" rel="noopener noreferrer">
           <div className="bg-gray-100 text-gray-300 transition-colors hover:text-gray-800 rounded-md p-2 flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
-              <polyline points="15 3 21 3 21 9"></polyline>
-              <line x1="10" y1="14" x2="21" y2="3"></line>
-            </svg>
+            <ExternalLink />
           </div>
         </a>
       </div>

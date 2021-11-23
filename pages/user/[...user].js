@@ -29,7 +29,28 @@ export default function UserPage({ releases, username }) {
 export async function getServerSideProps({ params }) {
   const username = params.user;
 
-  const repos = await getUserRepositories(username);
+  const result = {
+    props: {
+      username,
+      releases: [],
+    },
+  };
+  let userFound = true;
+  const repos = await getUserRepositories(username).catch((err) => {
+    if (err.status === 404) {
+      userFound = false;
+    }
+    return null;
+  });
+  if (!userFound) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/not-found",
+      },
+      props: {},
+    };
+  }
   const releasePromises = repos.map((repoItem) => {
     return getRepositoryLatestRelease(username, repoItem.name).then((data) => {
       if (!data) {
@@ -43,12 +64,6 @@ export async function getServerSideProps({ params }) {
       };
     });
   });
-  const releases = (await Promise.all(releasePromises)).filter((x) => x);
-
-  return {
-    props: {
-      username,
-      releases: releases,
-    },
-  };
+  result.props.releases = (await Promise.all(releasePromises)).filter((x) => x);
+  return result;
 }
