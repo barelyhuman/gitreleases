@@ -64,6 +64,16 @@ export async function getServerSideProps({ params }) {
       };
     });
   });
-  result.props.releases = (await Promise.all(releasePromises)).filter((x) => x);
+  /* 
+  FIXME: the current releases are based on updated repos which 
+  can be anything from creation to pushes to releases and so these 
+  can create invalid result 
+  */
+  result.props.releases = (await Promise.all(releasePromises))
+    .filter((x) => x)
+    .sort(
+      (x, y) =>
+        new Date(y.published_at).getTime() - new Date(x.published_at).getTime()
+    );
   return result;
 }
