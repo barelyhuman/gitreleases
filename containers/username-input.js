@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Box from "components/box";
@@ -10,6 +11,16 @@ export default function UsernameInputForm({ autoFocus, value, ...props }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    const handleRouteChangeComplete = () => {
+      setLoading(false);
+    };
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
+    };
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -19,8 +30,9 @@ export default function UsernameInputForm({ autoFocus, value, ...props }) {
     }
 
     setTimeout(() => {
-      router.push(`/user/${username}`);
-      setLoading(false);
+      const _url = `/user/${username}`;
+      router.prefetch(_url);
+      router.push(_url);
     }, 250);
   };
 
